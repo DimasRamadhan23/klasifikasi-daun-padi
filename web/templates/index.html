@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Deteksi Penyakit Daun Padi</title>
+  <meta name="description" content="Klasifikasi penyakit daun padi (blas, hawar daun bakteri, tungro) dengan ResNet-50 dan Grad-CAM.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><path d='M16 29C16 18 22 9 29 4 26 15 22 22 16 29Z' fill='%234d7c0f'/><path d='M16 29C16 20 11 12 4 8 6 18 10 24 16 29Z' fill='%2365a30d'/></svg>">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a class="brand" href="#analisis">
+        <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 29C16 18 22 9 29 4 26 15 22 22 16 29Z"/><path d="M16 29C16 20 11 12 4 8 6 18 10 24 16 29Z" opacity=".7"/></svg>
+        <span>DaunPadi<b>.id</b></span>
+      </a>
+      <nav>
+        <a href="#analisis">Analisis</a>
+        <a href="#penyakit">Penyakit</a>
+        <a href="#model">Tentang Model</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section id="analisis" class="wrap hero">
+      <div class="hero-text">
+        <p class="eyebrow">ResNet-50 · Transfer Learning · Grad-CAM</p>
+        <h1>Kenali penyakit daun padi dari satu foto</h1>
+        <p class="lead">Unggah foto daun padi. Model akan menduga apakah daun terserang <strong>blas</strong>,
+          <strong>hawar daun bakteri</strong>, atau <strong>tungro</strong>, lalu menunjukkan bagian citra yang menjadi dasar keputusannya.</p>
+        <ul class="tips">
+          <li>Foto <b>satu helai daun</b> dengan latar polos (kertas atau kain terang).</li>
+          <li>Pastikan bagian yang bergejala terlihat jelas dan tidak buram.</li>
+          <li>Format JPG atau PNG, maksimum 10 MB.</li>
+        </ul>
+      </div>
+
+      <div class="card upload-card">
+        <div id="model-banner" class="banner banner-warn" hidden></div>
+
+        <label id="dropzone" class="dropzone" for="file-input">
+          <input id="file-input" type="file" accept="image/jpeg,image/png" hidden>
+          <div class="dz-empty" id="dz-empty">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0-4 4m4-4 4 4M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <p><b>Klik untuk memilih foto</b><br>atau seret dan lepas di sini</p>
+          </div>
+          <img id="preview" class="preview" alt="Pratinjau citra" hidden>
+        </label>
+
+        <div class="actions">
+          <button id="btn-reset" class="btn btn-ghost" type="button" disabled>Ganti foto</button>
+          <button id="btn-analyze" class="btn btn-primary" type="button" disabled>
+            <span class="spinner" aria-hidden="true"></span><span class="btn-label">Analisis</span>
+          </button>
+        </div>
+        <p id="error" class="error" role="alert" hidden></p>
+      </div>
+    </section>
+
+    <section id="hasil" class="wrap result" hidden aria-live="polite">
+      <div class="card result-card">
+        <div class="result-head">
+          <div>
+            <p class="eyebrow">Hasil prediksi</p>
+            <h2 id="res-label">-</h2>
+            <p id="res-latin" class="latin"></p>
+          </div>
+          <div class="conf">
+            <span id="res-conf">-</span>
+            <small>keyakinan</small>
+          </div>
+        </div>
+
+        <div id="low-conf" class="banner banner-warn" hidden>
+          Keyakinan model di bawah {{ threshold }}%. Gambar mungkin bukan salah satu dari tiga penyakit yang dikenali
+          (misalnya daun sehat atau penyakit lain), atau kualitas fotonya kurang baik. Coba foto ulang dengan latar polos.
+        </div>
+
+        <div class="result-grid">
+          <figure>
+            <img id="res-input" alt="Citra masukan setelah resize 224×224">
+            <figcaption>Citra masukan (224×224)</figcaption>
+          </figure>
+          <figure>
+            <img id="res-cam" alt="Heatmap Grad-CAM">
+            <figcaption>Grad-CAM: <span class="hot">merah</span> = area paling berpengaruh</figcaption>
+          </figure>
+          <div class="probs">
+            <h3>Probabilitas per kelas</h3>
+            <div id="res-probs"></div>
+            <p id="res-time" class="muted"></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card info-card" id="res-info"></div>
+    </section>
+
+    <section id="penyakit" class="wrap section">
+      <h2 class="section-title">Penyakit yang dikenali</h2>
+      <p class="section-lead">Model dilatih untuk tiga kelas penyakit berikut. Daun sehat dan penyakit lain belum termasuk.</p>
+      <div class="disease-grid">
+        {% for d in diseases %}
+        <article class="card disease" style="--accent: {{ d.color }}">
+          <div class="disease-top">
+            <span class="tag">{{ d.type }}</span>
+            <code>{{ d.key }}</code>
+          </div>
+          <h3>{{ d.name }}</h3>
+          <p class="latin">{{ d.latin }}</p>
+          <p>{{ d.summary }}</p>
+          <details>
+            <summary>Gejala</summary>
+            <ul>{% for s in d.symptoms %}<li>{{ s }}</li>{% endfor %}</ul>
+          </details>
+          <details>
+            <summary>Penanganan umum</summary>
+            <ul>{% for s in d.management %}<li>{{ s }}</li>{% endfor %}</ul>
+          </details>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section id="model" class="wrap section">
+      <h2 class="section-title">Tentang model</h2>
+      <div class="model-grid">
+        <div class="card">
+          <h3>Arsitektur</h3>
+          <ol class="arch">
+            <li>Input 224×224×3 + <code>preprocess_input</code></li>
+            <li>ResNet-50 (bobot ImageNet)</li>
+            <li>Global Average Pooling</li>
+            <li>Dropout 0,3 → Dense 256 ReLU → Dropout 0,3</li>
+            <li>Dense 3 Softmax</li>
+          </ol>
+          <p class="muted">Dilatih 2 tahap: kepala klasifikasi (Adam 1e-3), lalu fine-tuning 30 layer teratas (Adam 1e-5).
+            Grad-CAM dihitung pada layer <code>conv5_block3_out</code>.</p>
+        </div>
+        <div class="card">
+          <h3>Dataset</h3>
+          <p>500 citra daun padi (Kaggle), dibagi 70:15:15 secara stratified.</p>
+          <table class="tbl">
+            <thead><tr><th>Kelas</th><th>Citra</th><th>Latih/Val/Uji</th></tr></thead>
+            <tbody>
+              <tr><td>blast</td><td>200</td><td>140/30/30</td></tr>
+              <tr><td>blight</td><td>220</td><td>154/33/33</td></tr>
+              <tr><td>tungro</td><td>80</td><td>56/12/12</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card metrics">
+          <h3>Performa</h3>
+          <div class="stat"><span>97,33%</span><small>Akurasi data uji</small></div>
+          <div class="stat"><span>96,36%</span><small>Macro F1 data uji</small></div>
+          <div class="stat"><span>98,40%</span><small>Akurasi 5-fold (± 0,89)</small></div>
+          <div class="stat"><span>98,07%</span><small>Macro F1 5-fold (± 1,15)</small></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p><b>Catatan:</b> website ini adalah alat bantu penelitian, bukan pengganti diagnosis ahli.
+        Untuk keputusan pengendalian, konsultasikan dengan penyuluh pertanian (PPL) atau petugas POPT setempat.</p>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DaunPadi — Deteksi Penyakit Daun Padi</title>
+  <meta name="description" content="Deteksi penyakit daun padi (blas, hawar daun bakteri, tungro) dari foto dengan ResNet-50 dan Grad-CAM, langsung di browser.">
+  <link rel="icon" href="assets/img/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a class="brand" href="index.html"><img src="assets/img/logo.svg" alt=""><span>DaunPadi<b>.id</b></span></a>
+      <button class="nav-toggle" type="button" aria-label="Buka menu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <nav class="nav">
+        <a href="index.html">Beranda</a>
+        <a href="deteksi.html">Deteksi</a>
+        <a href="penyakit.html">Penyakit</a>
+        <a href="tentang.html">Tentang</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="wrap hero">
+      <div>
+        <p class="eyebrow">ResNet-50 · Transfer Learning · Grad-CAM</p>
+        <h1>Kenali penyakit daun padi dari satu foto</h1>
+        <p class="lead">Unggah foto daun padi, lalu model akan menduga apakah daun terserang <strong>blas</strong>,
+          <strong>hawar daun bakteri</strong>, atau <strong>tungro</strong>, lengkap dengan peta bagian daun yang menjadi dasar keputusannya.</p>
+        <p class="muted">Semua proses berjalan di browser Anda. Foto tidak dikirim ke server mana pun.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary btn-lg" href="deteksi.html">Mulai deteksi</a>
+          <a class="btn btn-yellow btn-lg" href="penyakit.html">Kenali penyakitnya</a>
+        </div>
+      </div>
+      <svg class="hero-art" viewBox="0 0 400 400" role="img" aria-label="Ilustrasi daun padi dengan bercak penyakit">
+        <circle cx="200" cy="200" r="190" fill="var(--yellow-soft)"/>
+        <path d="M120 360C150 250 200 140 300 50 270 170 220 270 120 360Z" fill="var(--primary)"/>
+        <path d="M120 360C200 260 240 160 300 50" stroke="var(--bg)" stroke-width="3" fill="none" opacity=".5"/>
+        <path d="M90 350C90 260 70 170 30 110 90 170 120 260 90 350Z" fill="#84cc16" opacity=".85"/>
+        <ellipse cx="236" cy="168" rx="20" ry="9" transform="rotate(-50 236 168)" fill="#a8a29e" stroke="#9a3412" stroke-width="4"/>
+        <ellipse cx="196" cy="232" rx="15" ry="7" transform="rotate(-55 196 232)" fill="#a8a29e" stroke="#9a3412" stroke-width="4"/>
+        <circle cx="300" cy="300" r="56" fill="var(--surface)" stroke="var(--border)" stroke-width="2"/>
+        <path d="M278 300l15 15 30-30" stroke="var(--primary)" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </section>
+
+    <section class="wrap section">
+      <h2 class="section-title">Cara kerja</h2>
+      <p class="section-lead">Tiga langkah, kurang dari satu menit.</p>
+      <div class="steps">
+        <div class="card step">
+          <h3>Foto daun</h3>
+          <p>Ambil foto satu helai daun padi yang bergejala, sebaiknya dengan latar polos dan cahaya cukup.</p>
+        </div>
+        <div class="card step">
+          <h3>Unggah &amp; analisis</h3>
+          <p>Model ResNet-50 memproses foto di browser dan menghitung probabilitas tiap penyakit.</p>
+        </div>
+        <div class="card step">
+          <h3>Baca hasilnya</h3>
+          <p>Lihat dugaan penyakit, tingkat keyakinan, heatmap Grad-CAM, serta gejala dan penanganannya.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="wrap section">
+      <h2 class="section-title">Penyakit yang dikenali</h2>
+      <p class="section-lead">Model dilatih untuk tiga kelas. Daun sehat dan penyakit lain belum termasuk.</p>
+      <div class="class-strip">
+        <a class="card class-chip" href="penyakit.html#blast" style="--accent: var(--blast)">
+          <span class="tag">Jamur</span>
+          <h3>Blas</h3>
+          <p class="latin">Pyricularia oryzae</p>
+        </a>
+        <a class="card class-chip" href="penyakit.html#blight" style="--accent: var(--blight)">
+          <span class="tag">Bakteri</span>
+          <h3>Hawar Daun Bakteri</h3>
+          <p class="latin">Xanthomonas oryzae pv. oryzae</p>
+        </a>
+        <a class="card class-chip" href="penyakit.html#tungro" style="--accent: var(--tungro)">
+          <span class="tag">Virus</span>
+          <h3>Tungro</h3>
+          <p class="latin">RTBV &amp; RTSV</p>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p><b>Catatan:</b> website ini adalah alat bantu penelitian, bukan pengganti diagnosis ahli.
+        Untuk keputusan pengendalian, konsultasikan dengan penyuluh pertanian (PPL) atau petugas POPT setempat.</p>
+      <p>© <span id="tahun"></span> Klasifikasi Penyakit Daun Padi · ResNet-50 + Grad-CAM</p>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+flask>=3.0,<4
+tensorflow>=2.20,<2.21
+numpy
+pillow

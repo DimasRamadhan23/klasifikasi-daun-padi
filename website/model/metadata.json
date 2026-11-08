@@ -1,0 +1,15 @@
+{
+  "classes": [
+    "blast",
+    "blight",
+    "tungro"
+  ],
+  "img_size": 224,
+  "last_conv": "conv5_block3_out",
+  "weights": "float16",
+  "inputs": "citra [1,224,224,3] float32 0-255 (preprocess_input di dalam graf)",
+  "outputs": [
+    "probabilities",
+    "gradcam"
+  ]
+}

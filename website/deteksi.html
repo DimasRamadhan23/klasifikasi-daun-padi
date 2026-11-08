@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Deteksi — DaunPadi</title>
+  <meta name="description" content="Unggah foto daun padi dan dapatkan dugaan penyakit beserta heatmap Grad-CAM.">
+  <link rel="icon" href="assets/img/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a class="brand" href="index.html"><img src="assets/img/logo.svg" alt=""><span>DaunPadi<b>.id</b></span></a>
+      <button class="nav-toggle" type="button" aria-label="Buka menu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <nav class="nav">
+        <a href="index.html">Beranda</a>
+        <a href="deteksi.html">Deteksi</a>
+        <a href="penyakit.html">Penyakit</a>
+        <a href="tentang.html">Tentang</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="page-head">
+      <h1>Deteksi penyakit daun</h1>
+      <p>Pilih atau seret foto daun padi, lalu klik <b>Analisis</b>. Foto diproses di perangkat Anda dan tidak diunggah ke server.</p>
+    </div>
+
+    <section class="detect">
+      <div class="card">
+        <div class="model-status"><span id="status-dot" class="dot"></span><span id="status-text">Menyiapkan…</span></div>
+        <div id="progress" class="progress" hidden><i></i></div>
+        <div id="model-banner" class="banner banner-warn" hidden></div>
+
+        <label id="dropzone" class="dropzone" for="file-input">
+          <input id="file-input" type="file" accept="image/jpeg,image/png" hidden>
+          <div id="dz-empty" class="dz-empty">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0-4 4m4-4 4 4M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <p><b>Klik untuk memilih foto</b><br>atau seret dan lepas di sini</p>
+          </div>
+          <img id="preview" class="preview" alt="Pratinjau foto" hidden>
+        </label>
+
+        <div class="actions">
+          <button id="btn-reset" class="btn btn-ghost" type="button" disabled>Ganti foto</button>
+          <button id="btn-analyze" class="btn btn-primary" type="button" disabled>
+            <span class="spinner" aria-hidden="true"></span><span class="btn-label">Analisis</span>
+          </button>
+        </div>
+        <p id="error" class="error" role="alert" hidden></p>
+      </div>
+
+      <div class="card">
+        <h2 class="section-title" style="font-size:1.15rem">Tips foto yang baik</h2>
+        <ul class="tips">
+          <li>Foto <b>satu helai daun</b> dengan latar polos (kertas atau kain terang).</li>
+          <li>Pastikan bagian yang <b>bergejala</b> terlihat jelas dan tidak buram.</li>
+          <li>Gunakan cahaya alami. Hindari bayangan atau pantulan yang kuat.</li>
+          <li>Format <b>JPG atau PNG</b>, maksimum 10 MB.</li>
+        </ul>
+        <div class="banner banner-info" style="margin:16px 0 0">
+          <p>Model hanya mengenal <b>blas</b>, <b>hawar daun bakteri</b>, dan <b>tungro</b>. Foto daun sehat atau
+            penyakit lain tetap akan dimasukkan ke salah satu kelas tersebut. Perhatikan nilai keyakinannya.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="hasil" class="result" hidden aria-live="polite">
+      <div class="card">
+        <div class="result-head">
+          <div>
+            <p class="eyebrow">Hasil prediksi</p>
+            <h2 id="res-label">-</h2>
+            <p id="res-latin" class="latin"></p>
+          </div>
+          <div class="conf"><span id="res-conf">-</span><small>keyakinan</small></div>
+        </div>
+
+        <div id="low-conf" class="banner banner-warn" hidden>
+          Keyakinan model di bawah 70%. Foto mungkin bukan salah satu dari tiga penyakit yang dikenali
+          (misalnya daun sehat atau penyakit lain), atau kualitasnya kurang baik. Coba foto ulang dengan latar polos.
+        </div>
+
+        <div class="result-grid">
+          <figure>
+            <canvas id="cv-input" width="224" height="224"></canvas>
+            <figcaption>Citra masukan (224×224)</figcaption>
+          </figure>
+          <figure>
+            <canvas id="cv-cam" width="224" height="224"></canvas>
+            <figcaption>Grad-CAM: <span class="hot">merah</span> = area paling berpengaruh</figcaption>
+          </figure>
+          <div class="probs">
+            <h3>Probabilitas per kelas</h3>
+            <div id="res-probs"></div>
+            <p id="res-time" class="muted small"></p>
+          </div>
+        </div>
+      </div>
+
+      <div id="res-info" class="card"></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p><b>Catatan:</b> website ini adalah alat bantu penelitian, bukan pengganti diagnosis ahli.
+        Untuk keputusan pengendalian, konsultasikan dengan penyuluh pertanian (PPL) atau petugas POPT setempat.</p>
+      <p>© <span id="tahun"></span> Klasifikasi Penyakit Daun Padi · ResNet-50 + Grad-CAM</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/data-penyakit.js"></script>
+  <script src="js/deteksi.js"></script>
+</body>
+</html>

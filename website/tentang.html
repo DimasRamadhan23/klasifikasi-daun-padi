@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tentang Model — DaunPadi</title>
+  <meta name="description" content="Arsitektur, dataset, dan performa model ResNet-50 untuk klasifikasi penyakit daun padi.">
+  <link rel="icon" href="assets/img/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a class="brand" href="index.html"><img src="assets/img/logo.svg" alt=""><span>DaunPadi<b>.id</b></span></a>
+      <button class="nav-toggle" type="button" aria-label="Buka menu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <nav class="nav">
+        <a href="index.html">Beranda</a>
+        <a href="deteksi.html">Deteksi</a>
+        <a href="penyakit.html">Penyakit</a>
+        <a href="tentang.html">Tentang</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="page-head">
+      <h1>Tentang model</h1>
+      <p>Model berasal dari penelitian skripsi <i>Klasifikasi Penyakit Daun Padi Menggunakan ResNet-50 Transfer Learning
+        dan Interpretasi Grad-CAM</i>.</p>
+    </div>
+
+    <section class="card" style="margin-bottom:20px">
+      <h2 style="font-size:1.15rem">Performa</h2>
+      <div class="metrics">
+        <div class="stat"><span>97,33%</span><small>Akurasi data uji (75 citra)</small></div>
+        <div class="stat"><span>96,36%</span><small>Macro F1 data uji</small></div>
+        <div class="stat"><span>98,40%</span><small>Akurasi 5-fold (± 0,89)</small></div>
+        <div class="stat"><span>98,07%</span><small>Macro F1 5-fold (± 1,15)</small></div>
+      </div>
+    </section>
+
+    <div class="about-grid">
+      <section class="card">
+        <h2>Arsitektur</h2>
+        <ol class="arch">
+          <li>Input 224×224×3 + <code>preprocess_input</code></li>
+          <li>ResNet-50 (bobot ImageNet)</li>
+          <li>Global Average Pooling</li>
+          <li>Dropout 0,3 → Dense 256 ReLU → Dropout 0,3</li>
+          <li>Dense 3 Softmax</li>
+        </ol>
+        <p class="muted small">Pelatihan dua tahap: kepala klasifikasi dengan Adam (lr 0,001), lalu
+          <i>fine-tuning</i> 30 layer teratas dengan Adam (lr 0,00001). Augmentasi berupa flip horizontal, rotasi,
+          zoom, dan kontras. Bobot kelas dipakai untuk menyeimbangkan kelas tungro.</p>
+      </section>
+
+      <section class="card">
+        <h2>Dataset</h2>
+        <p class="muted small">500 citra daun padi (Kaggle), dibagi 70:15:15 secara <i>stratified</i>.</p>
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <thead><tr><th>Kelas</th><th class="num">Citra</th><th class="num">Latih</th><th class="num">Validasi</th><th class="num">Uji</th></tr></thead>
+            <tbody>
+              <tr><td>blast</td><td class="num">200</td><td class="num">140</td><td class="num">30</td><td class="num">30</td></tr>
+              <tr><td>blight</td><td class="num">220</td><td class="num">154</td><td class="num">33</td><td class="num">33</td></tr>
+              <tr><td>tungro</td><td class="num">80</td><td class="num">56</td><td class="num">12</td><td class="num">12</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Hasil per kelas (data uji)</h2>
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <thead><tr><th>Kelas</th><th class="num">Precision</th><th class="num">Recall</th><th class="num">F1</th></tr></thead>
+            <tbody>
+              <tr><td>blast</td><td class="num">100,00</td><td class="num">96,67</td><td class="num">98,31</td></tr>
+              <tr><td>blight</td><td class="num">100,00</td><td class="num">96,97</td><td class="num">98,46</td></tr>
+              <tr><td>tungro</td><td class="num">85,71</td><td class="num">100,00</td><td class="num">92,31</td></tr>
+              <tr><td><b>Macro</b></td><td class="num"><b>95,24</b></td><td class="num"><b>97,88</b></td><td class="num"><b>96,36</b></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Grad-CAM</h2>
+        <p class="muted small">Grad-CAM dihitung pada layer <code>conv5_block3_out</code>. Gradien skor kelas terhadap
+          <i>feature map</i> dirata-ratakan menjadi bobot tiap kanal, lalu kombinasi berbobotnya dilewatkan ReLU dan
+          dinormalisasi. Warna merah menandai area yang paling memengaruhi keputusan model.</p>
+      </section>
+    </div>
+
+    <section class="card" style="margin-bottom:24px">
+      <h2 style="font-size:1.15rem">Batasan</h2>
+      <ul class="notes">
+        <li>Model hanya mengenal 3 kelas. Belum ada kelas daun sehat, sehingga foto daun sehat tetap akan diberi label penyakit.</li>
+        <li>Analisis Grad-CAM menunjukkan sekitar 66% intensitas heatmap jatuh di latar belakang, jadi foto dengan latar polos memberi hasil lebih andal.</li>
+        <li>Dataset kecil (500 citra) dan kelas tungro paling sedikit (80 citra), sehingga akurasi di lapangan bisa lebih rendah.</li>
+        <li>Versi web memakai bobot float16 (TensorFlow.js), sehingga probabilitasnya bisa berbeda sangat sedikit dari notebook.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p><b>Catatan:</b> website ini adalah alat bantu penelitian, bukan pengganti diagnosis ahli.
+        Untuk keputusan pengendalian, konsultasikan dengan penyuluh pertanian (PPL) atau petugas POPT setempat.</p>
+      <p>© <span id="tahun"></span> Klasifikasi Penyakit Daun Padi · ResNet-50 + Grad-CAM</p>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

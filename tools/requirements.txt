@@ -1,0 +1,10 @@
+# Dependensi untuk tools/konversi_model.py (Python 3.10–3.12).
+# Setelah `pip install -r tools/requirements.txt`, jalankan juga:
+#   pip install --no-deps tensorflowjs==4.22.0
+# (--no-deps karena tensorflowjs mematok dependensi opsional yang bentrok dengan TF 2.20)
+tensorflow==2.20.*
+tf-keras~=2.20.0
+numpy
+packaging
+six
+importlib_resources

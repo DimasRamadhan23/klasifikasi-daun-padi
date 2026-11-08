@@ -1,0 +1,12 @@
+venv/
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+.env
+dataset/
+uploads/
+static/uploads/
+*.pth
+*.h5
+*.keras

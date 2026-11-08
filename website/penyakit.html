@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Penyakit — DaunPadi</title>
+  <meta name="description" content="Gejala, penyebab, dan penanganan umum penyakit blas, hawar daun bakteri, dan tungro pada padi.">
+  <link rel="icon" href="assets/img/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a class="brand" href="index.html"><img src="assets/img/logo.svg" alt=""><span>DaunPadi<b>.id</b></span></a>
+      <button class="nav-toggle" type="button" aria-label="Buka menu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <nav class="nav">
+        <a href="index.html">Beranda</a>
+        <a href="deteksi.html">Deteksi</a>
+        <a href="penyakit.html">Penyakit</a>
+        <a href="tentang.html">Tentang</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="page-head">
+      <h1>Penyakit yang dikenali</h1>
+      <p>Tiga penyakit daun padi yang menjadi kelas model. Penanganan di bawah ini bersifat umum.
+        Untuk dosis dan jenis pestisida, ikuti anjuran petugas setempat.</p>
+    </div>
+
+    <div class="disease-list">
+      <article id="blast" class="card disease" style="--accent: var(--blast)">
+        <div class="disease-top"><span class="tag">Jamur</span><code>blast</code></div>
+        <h2>Blas</h2>
+        <p class="latin">Pyricularia oryzae (Magnaporthe oryzae)</p>
+        <p>Penyakit jamur yang menyerang daun, leher malai, dan buku batang. Berkembang cepat pada kelembapan tinggi,
+          embun yang lama, dan pemupukan nitrogen berlebih.</p>
+        <div class="facts">
+          <div class="fact"><b>Penyebab</b>Jamur</div>
+          <div class="fact"><b>Penyebaran</b>Spora terbawa angin dan percikan air</div>
+          <div class="fact"><b>Data latih</b>200 citra</div>
+        </div>
+        <div class="info-cols">
+          <div>
+            <h4>Gejala</h4>
+            <ul>
+              <li>Bercak berbentuk belah ketupat (oval meruncing di kedua ujung).</li>
+              <li>Bagian tengah bercak abu-abu keputihan dengan tepi cokelat kemerahan.</li>
+              <li>Bercak dapat menyatu sehingga daun mengering.</li>
+              <li>Pada serangan leher malai (blas leher), malai patah dan bulir hampa.</li>
+            </ul>
+          </div>
+          <div>
+            <h4>Penanganan umum</h4>
+            <ul>
+              <li>Gunakan varietas tahan blas yang dianjurkan di daerah setempat.</li>
+              <li>Kurangi pupuk nitrogen berlebih; pupuk secara berimbang (N, P, K).</li>
+              <li>Atur jarak tanam (misalnya jajar legowo) agar kanopi tidak terlalu lembap.</li>
+              <li>Bersihkan sisa jerami dan gulma inang yang terinfeksi.</li>
+              <li>Bila serangan meluas, gunakan fungisida terdaftar sesuai anjuran petugas.</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <article id="blight" class="card disease" style="--accent: var(--blight)">
+        <div class="disease-top"><span class="tag">Bakteri</span><code>blight</code></div>
+        <h2>Hawar Daun Bakteri</h2>
+        <p class="latin">Xanthomonas oryzae pv. oryzae</p>
+        <p>Dikenal juga sebagai penyakit kresek. Bakteri masuk melalui luka atau pori air di tepi daun dan menyebar
+          lewat air irigasi, hujan, dan angin.</p>
+        <div class="facts">
+          <div class="fact"><b>Penyebab</b>Bakteri</div>
+          <div class="fact"><b>Penyebaran</b>Air irigasi, hujan, angin</div>
+          <div class="fact"><b>Data latih</b>220 citra</div>
+        </div>
+        <div class="info-cols">
+          <div>
+            <h4>Gejala</h4>
+            <ul>
+              <li>Lesi bergaris kuning hingga oranye, dimulai dari ujung atau tepi daun.</li>
+              <li>Lesi memanjang ke pangkal daun dengan batas bergelombang.</li>
+              <li>Daun menjadi keabu-abuan, mengering, dan tampak seperti terbakar.</li>
+              <li>Pada tanaman muda, seluruh tanaman dapat layu (gejala kresek).</li>
+            </ul>
+          </div>
+          <div>
+            <h4>Penanganan umum</h4>
+            <ul>
+              <li>Tanam varietas tahan hawar daun bakteri.</li>
+              <li>Hindari pemupukan nitrogen berlebih; tambahkan kalium.</li>
+              <li>Atur pengairan berselang (intermittent) dan jaga drainase sawah.</li>
+              <li>Hindari melukai daun saat memindah bibit.</li>
+              <li>Musnahkan sisa tanaman terinfeksi dan bersihkan pematang.</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <article id="tungro" class="card disease" style="--accent: var(--tungro)">
+        <div class="disease-top"><span class="tag">Virus</span><code>tungro</code></div>
+        <h2>Tungro</h2>
+        <p class="latin">Rice tungro bacilliform virus (RTBV) &amp; Rice tungro spherical virus (RTSV)</p>
+        <p>Penyakit virus yang ditularkan oleh wereng hijau (<i>Nephotettix virescens</i>). Tanaman yang sudah terinfeksi
+          tidak dapat disembuhkan, sehingga pengendalian berfokus pada vektor dan sumber infeksi.</p>
+        <div class="facts">
+          <div class="fact"><b>Penyebab</b>Virus</div>
+          <div class="fact"><b>Penyebaran</b>Wereng hijau</div>
+          <div class="fact"><b>Data latih</b>80 citra</div>
+        </div>
+        <div class="info-cols">
+          <div>
+            <h4>Gejala</h4>
+            <ul>
+              <li>Daun kuning hingga kuning-oranye, dimulai dari ujung daun.</li>
+              <li>Tanaman kerdil dan jumlah anakan berkurang.</li>
+              <li>Daun muda menggulung atau terpuntir.</li>
+              <li>Malai pendek, pembungaan terlambat, dan banyak bulir hampa.</li>
+            </ul>
+          </div>
+          <div>
+            <h4>Penanganan umum</h4>
+            <ul>
+              <li>Kendalikan wereng hijau sebagai vektor sejak persemaian.</li>
+              <li>Cabut dan benamkan tanaman bergejala (eradikasi).</li>
+              <li>Tanam serempak dalam satu hamparan dan lakukan rotasi varietas.</li>
+              <li>Gunakan varietas tahan tungro atau tahan wereng hijau.</li>
+              <li>Laporkan serangan ke petugas POPT/PPL setempat.</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p><b>Catatan:</b> website ini adalah alat bantu penelitian, bukan pengganti diagnosis ahli.
+        Untuk keputusan pengendalian, konsultasikan dengan penyuluh pertanian (PPL) atau petugas POPT setempat.</p>
+      <p>© <span id="tahun"></span> Klasifikasi Penyakit Daun Padi · ResNet-50 + Grad-CAM</p>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
