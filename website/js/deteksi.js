@@ -165,7 +165,9 @@
 
     let bitmap;
     try {
-      bitmap = await createImageBitmap(file);
+      // Baca piksel apa adanya (tanpa konversi profil warna), sama seperti
+      // tf.io.decode_image di notebook/app.py.
+      bitmap = await createImageBitmap(file, { colorSpaceConversion: "none", premultiplyAlpha: "none" });
     } catch {
       showError("File tidak dapat dibaca sebagai gambar.");
       finish();

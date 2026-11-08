@@ -34,7 +34,7 @@ Klasifikasi Penyakit Daun Padi/
 │   └── model/                       # model TensorFlow.js (hasil konversi)
 │       ├── README.md
 │       ├── model.json               # ← dibuat oleh tools/konversi_model.py
-│       ├── group1-shard*of*.bin     # ← bobot model (±48 MB total)
+│       ├── group1-shard*of*.bin     # ← bobot model (±96 MB total)
 │       └── metadata.json            # ← daftar kelas
 │
 └── tools/
@@ -90,8 +90,8 @@ Pustaka luar hanya satu: **TensorFlow.js 4.22.0** dari CDN jsDelivr (dimuat di `
 
 Grad-CAM dihitung di dalam model memakai turunan analitik kepala klasifikasi
 (GAP → Dense ReLU → Dense Softmax). Skrip memeriksa otomatis bahwa hasilnya sama dengan
-Grad-CAM `GradientTape` di notebook sebelum menyimpan. Bobot disimpan dalam float16 (±48 MB);
-pakai `--float32` untuk bobot penuh (±94 MB).
+Grad-CAM `GradientTape` di notebook sebelum menyimpan. Bobot disimpan dalam float32 penuh (±96 MB) agar hasil sama dengan Keras;
+float16 (tanpa `--float32`) mengubah 21 dari 500 prediksi dataset, jadi tidak dipakai.
 
 ## 5. Cara menyiapkan model
 
@@ -109,7 +109,7 @@ pakai `--float32` untuk bobot penuh (±94 MB).
    python tools/konversi_model.py \
      --model model_asli/resnet50_daun_padi.keras \
      --classes model_asli/class_names.json \
-     --out website/model
+     --out website/model --float32
    ```
 
 ## 6. Cara menjalankan website
@@ -132,5 +132,5 @@ GitHub Pages, Netlify, atau Vercel.
 
 - Model hanya mengenal 3 kelas (blast, blight, tungro). Foto daun sehat tetap akan diberi salah satu label,
   karena itu ada peringatan keyakinan rendah.
-- Versi web memakai bobot float16, jadi probabilitasnya bisa berbeda sangat sedikit dari notebook (sekitar 0,1%).
-- Pemuatan pertama mengunduh ±48 MB. Setelah itu browser menyimpannya di cache.
+- Versi web memakai bobot float32 dan membaca piksel tanpa konversi profil warna, sama seperti notebook.
+- Pemuatan pertama mengunduh ±96 MB. Setelah itu browser menyimpannya di cache.

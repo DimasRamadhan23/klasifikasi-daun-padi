@@ -100,7 +100,7 @@
         <li>Model hanya mengenal 3 kelas. Belum ada kelas daun sehat, sehingga foto daun sehat tetap akan diberi label penyakit.</li>
         <li>Analisis Grad-CAM menunjukkan sekitar 66% intensitas heatmap jatuh di latar belakang, jadi foto dengan latar polos memberi hasil lebih andal.</li>
         <li>Dataset kecil (500 citra) dan kelas tungro paling sedikit (80 citra), sehingga akurasi di lapangan bisa lebih rendah.</li>
-        <li>Versi web memakai bobot float16 (TensorFlow.js), sehingga probabilitasnya bisa berbeda sangat sedikit dari notebook.</li>
+        <li>Versi web memakai bobot float32 penuh (TensorFlow.js), sehingga hasilnya sama dengan model di notebook. Pemuatan pertama mengunduh ±96 MB.</li>
       </ul>
     </section>
   </main>
